@@ -1,15 +1,9 @@
 const mongoose = require('mongoose');
 
-const LanguagesSchema = new mongoose.Schema({
+var lang = new mongoose.Schema({
 
-    Source: {
-        type: String,
-        required: true
-    },
-    Count: {
-        type: Number,
-        required: true
-    },
+    Source: String,
+    Count: Number,
     Years: {
         2018: Number,
         2017: Number,
@@ -17,9 +11,10 @@ const LanguagesSchema = new mongoose.Schema({
         2015: Number,
         2014: Number,
         2013: Number,
-        none: Number
+        2012: Number
     }
 
 });
 
-module.exports = mongoose.model('Languages', LanguagesSchema);
+
+module.exports = mongoose.model('Lang', lang);

@@ -5,7 +5,7 @@ const languagesController = require('../controllers/Languages');
 // route   GET languages/
 // desc    Returns all the languages
 // access  Public
-router.get('/', languagesController.getAllLanguagess);
+router.get('/', languagesController.getAllLanguages);
 
 // route   GET languages/:id
 // desc    Get language by id

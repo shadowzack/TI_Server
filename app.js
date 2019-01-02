@@ -6,7 +6,7 @@ const db = require('./config/keys').mongoURI;
 const passport = require('passport');
 const languagesRoutes = require('./API/routes/languages');
 
-mongoose.connect('mongodb://mahmod:123456A@ds249623.mlab.com:49623/languages_index', { useNewUrlParser: true })
+ mongoose.connect(db,{useNewUrlParser:true})
     .then(() => {
         console.log('mongoDB connected');
     }).catch((err) => {

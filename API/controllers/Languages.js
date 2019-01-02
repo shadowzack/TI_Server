@@ -2,11 +2,14 @@ const Languages = require('../models/Languages');
 const mongoose = require('mongoose');
 
 
-exports.getAllLanguagess = (req, res, next) => {
+exports.getAllLanguages = (req, res, next) => {
 
     Languages
         .find()
-        .then((languages) => res.json(languages))
+        .then(languages => {
+            console.log(languages)
+            res.json(languages)
+        })
         .catch((error) => res.status(500).json(error));
 
 };
