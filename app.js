@@ -43,7 +43,7 @@ app.use('/languages', languagesRoutes);
 app.get('/', (req, res, next) => {
     res.json({
         message: "check the api in the link bellow",
-        link: "https://events-social-network-api.herokuapp.com/"
+        link: "https://github.com/shadowzack/TI_Server"
     });
 });
 
