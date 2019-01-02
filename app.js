@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const db = require('./config/keys').mongoURI;
 const passport = require('passport');
-const languagesRoutes = require('./API/routes/languages');
+const languagesRoutes = require('./API/routes/Languages');
 
  mongoose.connect(db,{useNewUrlParser:true})
     .then(() => {
