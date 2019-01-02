@@ -2,19 +2,18 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-//const db = require('./config/keys').mongoURI;
+const db = require('./config/keys').mongoURI;
 const passport = require('passport');
-//const eventsRoutes = require('./API/routes/events');
+const languagesRoutes = require('./API/routes/languages');
 
-/*
-mongoose.connect(db)
+mongoose.connect('mongodb://mahmod:123456A@ds249623.mlab.com:49623/languages_index', { useNewUrlParser: true })
     .then(() => {
         console.log('mongoDB connected');
     }).catch((err) => {
         console.log(err);
     });
-*/
-//app.use('/uploads', express.static('uploads'));
+
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -25,26 +24,26 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
     if (req.method === "OPTIONS") {
-      res.header("Access-Control-Allow-Methods", " POST, PATCH, DELETE, GET");
-      return res.status(200).json({});
+        res.header("Access-Control-Allow-Methods", " POST, PATCH, DELETE, GET");
+        return res.status(200).json({});
     }
     next();
-  });
+});
 
 
 
 //routes
-//app.use('/users', usersRoutes);
+app.use('/languages', languagesRoutes);
 
 
-app.get('/',(req,res,next)=>{
+app.get('/', (req, res, next) => {
     res.json({
-        message:"check the api in the link bellow",
-        link:"https://events-social-network-api.herokuapp.com/"
+        message: "check the api in the link bellow",
+        link: "https://events-social-network-api.herokuapp.com/"
     });
 });
 
