@@ -1,0 +1,17 @@
+{
+  "name": "ti_server",
+  "version": "1.0.0",
+  "description": "server side node js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "node",
+    "express",
+    "api"
+  ],
+  "author": "mahmod,adham,nidal",
+  "license": "ISC"
+}
