@@ -1,4 +1,4 @@
-# Welcome to Technologies interaction API 
+# Welcome to Technologies intersection API 
  
 # APP and offical API
 ### APP:
