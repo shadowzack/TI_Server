@@ -12,4 +12,9 @@ router.get('/', languagesController.getAllLanguages);
 // access  Public
 router.get('/:id', languagesController.getLanguageById);
 
+// route   GET languages/:year
+// desc    Get languages by year
+// access  Public
+router.get('/year/:year', languagesController.getLanguagesByYears);
+
 module.exports = router;
