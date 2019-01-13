@@ -39,12 +39,7 @@ app.use((req, res, next) => {
 //routes
 app.use('/languages', languagesRoutes);
 
-if(process.env.NODE_ENV==='production'){
-    app.use(express.static('client/build'));
-    app.get('*',(res,res)=>{
-res.sendFile(path.resolve(__dirname,'client','build','index.html'));
-    })
-}
+
 app.get('/', (req, res, next) => {
     res.json({
         message: "check the api in the link bellow",
