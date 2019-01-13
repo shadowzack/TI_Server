@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const db = require('./config/keys').mongoURI;
 const passport = require('passport');
 const languagesRoutes = require('./API/routes/Languages');
-
+const path= require('path');
  mongoose.connect(db,{useNewUrlParser:true})
     .then(() => {
         console.log('mongoDB connected');
@@ -39,7 +39,12 @@ app.use((req, res, next) => {
 //routes
 app.use('/languages', languagesRoutes);
 
-
+if(process.env.NODE_ENV==='production'){
+    app.use(express.static('client/build'));
+    app.get('*',(res,res)=>{
+res.sendFile(path.resolve(__dirname,'client','build','index.html'));
+    })
+}
 app.get('/', (req, res, next) => {
     res.json({
         message: "check the api in the link bellow",
