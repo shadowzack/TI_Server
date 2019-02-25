@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const db = require('./config/keys').mongoURI;
 const passport = require('passport');
 const languagesRoutes = require('./API/routes/Languages');
+const tagsRoutes = require('./API/routes/Tags');
 const path= require('path');
 
  mongoose.connect(db,{useNewUrlParser:true})
@@ -40,6 +41,8 @@ app.use((req, res, next) => {
 //routes
 app.use('/languages', languagesRoutes);
 
+//routes
+app.use('/tags', tagsRoutes);
 
 app.get('/', (req, res, next) => {
     res.json({
