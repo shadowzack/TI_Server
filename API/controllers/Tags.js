@@ -39,6 +39,28 @@ exports.getAllLanguages = (req, res, next) => {
 
 
 */
+exports.getLanaguageTags = (req, res, next) => {
+  // Data_tags.find({source: req.params.source},{"year.tags.qIds":0})
+  // .project({ "year.tags.qIds": 0 })
+  Data_tags.aggregate([
+    { $match: { source: req.params.source } },
+    //{$gt:{"$year.tags.hits": 100}},
+    {
+      $project: { "year.tags.qIds": 0 }
+    }
+  ])
+    .then(tags => {
+     /* tags.year.forEach(yr => {
+        yr.tags.forEach((tag,index) => {
+          if(tag.hits<100)
+            delete yr[index];
+        });
+      });
+*/
+      res.json(tags);
+    })
+    .catch(err => res.status(500).json(err));
+};
 
 exports.getIntersection = (req, res, next) => {
   /*Data_tags.aggregate([
