@@ -50,13 +50,31 @@ exports.getLanaguageTags = (req, res, next) => {
     }
   ])
     .then(tags => {
-     /* tags.year.forEach(yr => {
+      /* tags.year.forEach(yr => {
         yr.tags.forEach((tag,index) => {
           if(tag.hits<100)
             delete yr[index];
         });
       });
 */
+      res.json(tags);
+    })
+    .catch(err => res.status(500).json(err));
+};
+exports.getLanaguageTagQustions = (req, res, next) => {
+  /*Data_tags.find(
+    {
+      $and: [{ source: req.params.source }, { "year.tags.tag": req.params.tag }]
+    },
+    { "year.tags.qIds": 1 }
+  )*/
+  Data_tags.aggregate([
+    { $match: { source: req.params.source } },
+    { $unwind: "$year" },
+    { $unwind: "$year.tags" },
+    { $match: { "year.tags.tag": req.params.tag } }
+  ])
+    .then(tags => {
       res.json(tags);
     })
     .catch(err => res.status(500).json(err));

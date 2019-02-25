@@ -11,9 +11,14 @@ router.get('/:source', tagsController.getTagsQustions);
 
 
 // route   GET tags/alltags/:source
-// desc    Get language by source with 10 random question IDs
+// desc    Get all language tags
 // access  Public
 router.get('/alltags/:source', tagsController.getLanaguageTags);
+
+// route   GET tags/allqustions/:source
+// desc    get all tag qustion
+// access  Public
+router.get('/allqustions/:source/:tag', tagsController.getLanaguageTagQustions);
 
 // route   GET tags/
 // desc    recive 2 tags and retrun ids array intersection 
