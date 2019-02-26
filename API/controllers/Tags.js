@@ -43,10 +43,43 @@ exports.getLanaguageTags = (req, res, next) => {
   // Data_tags.find({source: req.params.source},{"year.tags.qIds":0})
   // .project({ "year.tags.qIds": 0 })
   Data_tags.aggregate([
-    { $match: { source: req.params.source } },
+    /*{ $match: { source: req.params.source } },
     //{$gt:{"$year.tags.hits": 100}},
     {
       $project: { "year.tags.qIds": 0 }
+      
+    },
+    { $unwind: "$year" },
+    { $unwind: "$year.tags" },
+    { $sort: { "year.tags.hits": 1 } }*/
+
+    { $match: { source: req.params.source } },
+
+    // { $group : { _id : {month_joined:"$month_joined"} , number : { $sum : 1 } } },
+    { $unwind: "$year" },
+    { $unwind: "$year.tags" },
+    { $sort: { "year.tags.hits": -1 } },
+    {
+      $project: {
+        "year.tags.qIds": 0
+      }
+    },
+
+    {
+      $group: {
+        _id: "$_id",
+        source: { $first: "$source" },
+        count: { $first: "$count" },
+        year: { $push: "$$ROOT" }
+        /* _id: "$_id",
+        source: { $first: "$source" },
+        count: { $first: "$count" },
+        year: {
+          $push: { year: "$_id.year", count: "$_id.count",tags: "$year.year.tags"}
+        }
+        //year: { $push: "$year" }
+        */
+      }
     }
   ])
     .then(tags => {
