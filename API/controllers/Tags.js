@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const async = require("async");
 const { intersection } = require("underscore");
 exports.getLanaguageTags = (req, res, next) => {
-  Data_tags.aggregate([
+  Data_tags.find({source: req.params.source},{"year.tags.qIds":0})
+  /*Data_tags.aggregate([
     { $match: { source: req.params.source } },
     { $unwind: "$year" },
     { $unwind: "$year.tags" },
@@ -17,7 +18,7 @@ exports.getLanaguageTags = (req, res, next) => {
         year: { $push: "$$ROOT" }
       }
     }
-  ])
+  ])*/
     .then(tags => {
       res.json(tags);
     })
