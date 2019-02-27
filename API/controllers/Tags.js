@@ -1,7 +1,7 @@
 const Data_tags = require("../models/Data_tags");
 const mongoose = require("mongoose");
 const async = require("async");
-
+const { intersection } = require("underscore");
 exports.getLanaguageTags = (req, res, next) => {
   Data_tags.aggregate([
     { $match: { source: req.params.source } },
@@ -55,25 +55,67 @@ exports.compareLanguagesByTags = (req, res, next) => {
   async.parallel(
     [
       function(callback) {
-        Data_tags.aggregate([
-          { $match: { source: newComp.first.source } },
-          { $unwind: "$year" },
-          { $unwind: "$year.tags" },
-          { $match: { "year.tags.tag": newComp.first.tag } }
-        ]);
+        Data_tags.aggregate(
+          [
+            { $match: { source: newComp.first.source } },
+            { $unwind: "$year" },
+            { $unwind: "$year.tags" },
+            { $match: { "year.tags.tag": newComp.first.tag } }
+          ],
+          callback
+        );
       },
       function(callback) {
-        Data_tags.aggregate([
-          { $match: { source: newComp.second.source } },
-          { $unwind: "$year" },
-          { $unwind: "$year.tags" },
-          { $match: { "year.tags.tag": newComp.second.tag } }
-        ]);
+        Data_tags.aggregate(
+          [
+            { $match: { source: newComp.second.source } },
+            { $unwind: "$year" },
+            { $unwind: "$year.tags" },
+            { $match: { "year.tags.tag": newComp.second.tag } }
+          ],
+          callback
+        );
       }
     ],
 
-    function(err, results) {
-      res.json({ first: results[0], second: results[1] });
+    (err, results) => {
+      const first = results[0];
+      const second = results[1];
+
+      //intersection=_.intersection(firstArray,secondArray);
+
+      try {
+        firstArray = first[0].year.tags.qIds;
+        secondArray = second[0].year.tags.qIds;
+        //intersection:_.intersection(firstArray,secondArray)
+
+        intersectionArray = [];
+        j = 0;
+        for (var i = 0; i < firstArray.length; ++i)
+          if (secondArray.indexOf(firstArray[i]) != -1)
+            intersectionArray[j++] = firstArray[i];
+
+        if (err) {
+          throw err;
+        }
+        res.json({
+          intersectionArray: intersectionArray,
+          firstTag: {
+            source: first[0].source,
+            tag: first[0].year.tags.tag,
+            hits: first[0].year.tags.hits
+          },
+          secondTag: {
+            source: second[0].source,
+            tag: second[0].year.tags.tag,
+            hits: second[0].year.tags.hits
+          }
+        });
+        // res.json({first:first,second,second});
+        // res.json({ firstArray:firstArray,secondArray:secondArray });
+      } catch (err) {
+        res.status(500).json(err);
+      }
     }
   );
 };
