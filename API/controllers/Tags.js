@@ -2,9 +2,45 @@ const Data_tags = require("../models/Data_tags");
 const mongoose = require("mongoose");
 const async = require("async");
 const { intersection } = require("underscore");
+const http = require("http");
+const request = require("request");
+const await =require("await");
+const cheerio = require("cheerio");
+
+
+
+
+ const scrape = (qIds,callback) => {
+  resArray = [];
+  if (qIds.length < 10) max = qIds.length;
+  else max = 10;
+  for (let index = 0; index < max; index++) {
+    request(
+      {
+        method: "GET",
+        url: `https://stackoverflow.com/questions/${qIds[index]}`
+      },
+      function(err, response, body, callback) {
+        if (err) return console.error(err);
+
+        // get the HTML body from WordThink.com
+        $ = cheerio.load(body);
+
+        var question = $("#question-header h1 a").text();
+        console.log(question);
+        resArray.push({ question: question, id: qIds[index] });
+      }
+    );
+  }
+  //callback(resArray)
+  return resArray
+  //return resArray;
+  
+};
+
 exports.getLanaguageTags = (req, res, next) => {
-  Data_tags.find({source: req.params.source},{"year.tags.qIds":0})
-  /*Data_tags.aggregate([
+  Data_tags.find({ source: req.params.source }, { "year.tags.qIds": 0 })
+    /*Data_tags.aggregate([
     { $match: { source: req.params.source } },
     { $unwind: "$year" },
     { $unwind: "$year.tags" },
@@ -99,7 +135,16 @@ exports.compareLanguagesByTags = (req, res, next) => {
         if (err) {
           throw err;
         }
-        res.json({
+
+        
+          questionArray = scrape(intersectionArray);
+        
+        
+      
+        //JSON.parse(questionArray)
+
+          res.json({
+          questionArray: questionArray,
           intersectionArray: intersectionArray,
           firstTag: {
             source: first[0].source,
