@@ -1,5 +1,6 @@
 const Data_tags = require("../models/Data_tags");
 const mongoose = require("mongoose");
+const async = require("async");
 
 exports.getLanaguageTags = (req, res, next) => {
   Data_tags.aggregate([
@@ -46,18 +47,36 @@ exports.getTagsQustions = (req, res, next) => {
     .catch(err => res.status(500).json(err));
 };
 
+exports.compareLanguagesByTags = (req, res, next) => {
+  const newComp = {
+    first: req.body.first,
+    second: req.body.second
+  };
+  async.parallel(
+    [
+      function(callback) {
+        Data_tags.aggregate([
+          { $match: { source: newComp.first.source } },
+          { $unwind: "$year" },
+          { $unwind: "$year.tags" },
+          { $match: { "year.tags.tag": newComp.first.tag } }
+        ]);
+      },
+      function(callback) {
+        Data_tags.aggregate([
+          { $match: { source: newComp.second.source } },
+          { $unwind: "$year" },
+          { $unwind: "$year.tags" },
+          { $match: { "year.tags.tag": newComp.second.tag } }
+        ]);
+      }
+    ],
 
-
-
-
-
-
-
-
-
-
-
-
+    function(err, results) {
+      res.json({ first: results[0], second: results[1] });
+    }
+  );
+};
 
 //keep it form me
 exports.getIntersection = (req, res, next) => {

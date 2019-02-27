@@ -20,6 +20,10 @@ router.get('/alltags/:source', tagsController.getLanaguageTags);
 // access  Public
 router.get('/allqustions/:source/:tag', tagsController.getLanaguageTagQustions);
 
+// route   POST tags/compare
+// desc    compare two languages by tags
+// access  Public
+router.post('/compare', tagsController.compareLanguagesByTags);
 
 
 
