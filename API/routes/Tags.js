@@ -22,6 +22,7 @@ router.get('/allqustions/:source/:tag', tagsController.getLanaguageTagQustions);
 // access  Public
 router.post('/compare', tagsController.compareLanguagesByTags);
 
+router.post('/compare/compareLanguagesByTagsByYear', tagsController.compareLanguagesByTags);
 // route   POST tags/compare
 // desc    compare two languages by tags
 // access  Public
