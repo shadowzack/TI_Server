@@ -162,28 +162,7 @@ exports.compareLanguagesByTags = (req, res, next) => {
 
 //keep it form me
 exports.getIntersection = (req, res, next) => {
-  /*Data_tags.aggregate([
-    {
-      $match: {
-        source: { $in: [req.params.first, req.params.second] }
-      }
-    },
-    {
-      $group: {
-        _id: 0,
-        set1: { $first: "$year.tags" },
-        set2: { $last: "$year.tags" }
-      }
-    },
-    {
-      $project: {
-        set1: 1,
-        set2: 1,
-        commonToBoth: { $setIntersection: ["$set1", "$set2"] },
-        _id: 0
-      }
-    }
-  ])*/
+  
 
   Data_tags.aggregate([
     { $match: { source: { $in: [req.params.first, req.params.second] } } },
@@ -267,11 +246,11 @@ exports.compareLanguages = (req, res) => {
       // console.log(tagsArray)
 
       let intersectionArray = [];
-      let maxArray;
+
       result
         .forEach(element => {
           let max = 0;
-       
+          let maxArray;
           if (element.source !== source) {
             element.year.forEach(yearn => {
               if (yearn.year === reqYear) {
@@ -302,78 +281,109 @@ exports.compareLanguages = (req, res) => {
                 // 		intersectionArray[j++] = firstArray[i];
 
                 //console.log(intersectionArray);
-                /*   Profile.findOne({
-                  user: req.user.id
-              }).then((profile) => {
-                  let eventsArray = [];
-                  profile.invites.forEach((id) => {
-                      eventsArray.push(Event.findById(id._id));
-                  });
-                  return Promise.all(eventsArray);
-              }).then((Jobs) => {
-                  res.send(Jobs);
-              }).catch((error) => {
-                  res.status(500).send('one of the queries failed', error);
-              });*/
 
                 maxTmp = intersectionArray.length;
                 if (maxTmp > max) {
                   max = maxTmp;
-                  maxArray = intersectionArray;
-                  //console.log(maxArray)
+									maxArray = intersectionArray;
+									console.log(maxArray)
                 }
+                console.log(intersectionArray)
                 intersectionArray = [];
               }
             });
           }
-          // return Promise.all(maxArray).then(result=>{
-          //   res.json(result);
-            
-          // }).catch(err => {
-          //   res.status(500).json(err);
-          // });
-        }).then((result) => {
-          console.log(maxArray);
+        })
+        .then(result => {
           res.json(maxArray);
-        }).catch((err) => {
-          res.status(500).json(err);
-        });        
-          //var x= JSON.parse(maxArray)
-          //setTimeout(() => res.json(x), 5000);
-         
-        
+        })
+        .catch(err => {});
     })
     .catch(err => {
       res.status(500).json(err);
     });
 };
 
-/*
-async.parallel(
-  [
-    function(callback) {
-      Data_tags.aggregate(
-        [
-          { $match: { source: newComp.first.source } },
-          { $unwind: "$year" },
-          { $unwind: "$year.tags" },
-          { $match: { "year.tags.tag": newComp.first.tag } }
-        ],
-        callback
-      );
-    },
-    function(callback) {
-      Data_tags.aggregate(
-        [
-          { $match: { source: newComp.second.source } },
-          { $unwind: "$year" },
-          { $unwind: "$year.tags" },
-          { $match: { "year.tags.tag": newComp.second.tag } }
-        ],
-        callback
-      );
-    }
-  ],
-  (err, results) => {
 
-    */
+
+
+
+//keep it form me
+exports.compareLanguagesByTagsByYear = (req, res, next) => {
+  const newComp = {
+    first: req.body.first,
+    second: req.body.second
+  };
+
+  async.parallel(
+    [
+      function(callback) {
+        Data_tags.aggregate(
+          [
+            { $match: { source: newComp.first.source } },
+            { $unwind: "$year" },
+            { $unwind: "$year.tags" },
+            { $match: { "year.tags.tag": newComp.first.tag } }
+          ],
+          callback
+        );
+      },
+      function(callback) {
+        Data_tags.aggregate(
+          [
+            { $match: { source: newComp.second.source } },
+            { $unwind: "$year" },
+            { $unwind: "$year.tags" },
+            { $match: { "year.tags.tag": newComp.second.tag } }
+          ],
+          callback
+        );
+      }
+    ],
+    (err, results) => {
+      const first = results[0];
+      const second = results[1];
+
+      //intersection=_.intersection(firstArray,secondArray);
+
+      try {
+        firstArray = first[0].year.tags.qIds;
+        secondArray = second[0].year.tags.qIds;
+        //intersection:_.intersection(firstArray,secondArray)
+
+        intersectionArray = [];
+        j = 0;
+        for (var i = 0; i < firstArray.length; ++i)
+          if (secondArray.indexOf(firstArray[i]) != -1)
+            intersectionArray[j++] = firstArray[i];
+
+        if (err) {
+          throw err;
+        }
+
+        questionArray = scrape(intersectionArray);
+
+        //JSON.parse(questionArray)
+
+        res.json({
+          questionArray: questionArray,
+          intersectionArray: intersectionArray,
+          firstTag: {
+            source: first[0].source,
+            tag: first[0].year.tags.tag,
+            hits: first[0].year.tags.hits
+          },
+          secondTag: {
+            source: second[0].source,
+            tag: second[0].year.tags.tag,
+            hits: second[0].year.tags.hits
+          }
+        });
+        // res.json({first:first,second,second});
+        // res.json({ firstArray:firstArray,secondArray:secondArray });
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    }
+  );
+};
