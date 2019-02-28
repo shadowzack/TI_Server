@@ -207,3 +207,42 @@ exports.getIntersection = (req, res, next) => {
 		})
 		.catch((err) => res.status(500).json(err));
 };
+
+// exports.compareLanguages = (req, res) => {
+// 	var arraycounter = [];
+// 	Data_tags.findOne({ 'year[0].tags': 'html' }).then((elem) => {
+// 		console.log(elem);
+// 		// console.log([ elem['year'] ]);
+// 		elem.year[0].tags.forEach((tag) => {
+// 			// console.log(tag.tag);
+// 			Data_tags.aggregate([
+// 				{ $unwind: '$source' },
+// 				{ $unwind: '$year' },
+// 				{ $unwind: '$year.tags' },
+// 				{ $match: { 'year[0].tags.tag': tag.tag } }
+// 			]).then((tags) => {
+// 				console.log(tags);
+// 			});
+// 			// Data_tags.find({ 'year[0].tags': { $in: tag.tag } }).then((objects) => {
+// 			// 	console.log(objects);
+// 			// if (objects.length > 0) {
+// 			// 	console.log('found');
+// 			// 	objects.forEach((lang) => {
+// 			// 		arraycounter[lang.source]++;
+// 			// 		console.log(arraycounter);
+// 			// 	});
+// 			// }
+// 			// });
+// 		});
+// 	});
+// };
+
+exports.compareLanguages = (req, res) => {
+	Data_tags.findOne({ source: req.params.source }).then((elem) => {
+		if (elem) {
+			elem.year[0].tags.forEach((tag) => {
+				Data_tags.find({ 'year[0].tags.tag': tag.tag }).then((okay) => console.log(okay));
+			});
+		}
+	});
+};
