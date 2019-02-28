@@ -267,11 +267,11 @@ exports.compareLanguages = (req, res) => {
       // console.log(tagsArray)
 
       let intersectionArray = [];
-
+      let maxArray;
       result
         .forEach(element => {
           let max = 0;
-          let maxArray;
+       
           if (element.source !== source) {
             element.year.forEach(yearn => {
               if (yearn.year === reqYear) {
@@ -326,14 +326,54 @@ exports.compareLanguages = (req, res) => {
               }
             });
           }
-          return Promise.all(maxArray);
-        })
-        .then(result => {
-          res.json(result);
-        })
-        .catch(err => {});
+          // return Promise.all(maxArray).then(result=>{
+          //   res.json(result);
+            
+          // }).catch(err => {
+          //   res.status(500).json(err);
+          // });
+        }).then((result) => {
+          console.log(maxArray);
+          res.json(maxArray);
+        }).catch((err) => {
+          res.status(500).json(err);
+        });        
+          //var x= JSON.parse(maxArray)
+          //setTimeout(() => res.json(x), 5000);
+         
+        
     })
     .catch(err => {
       res.status(500).json(err);
     });
 };
+
+/*
+async.parallel(
+  [
+    function(callback) {
+      Data_tags.aggregate(
+        [
+          { $match: { source: newComp.first.source } },
+          { $unwind: "$year" },
+          { $unwind: "$year.tags" },
+          { $match: { "year.tags.tag": newComp.first.tag } }
+        ],
+        callback
+      );
+    },
+    function(callback) {
+      Data_tags.aggregate(
+        [
+          { $match: { source: newComp.second.source } },
+          { $unwind: "$year" },
+          { $unwind: "$year.tags" },
+          { $match: { "year.tags.tag": newComp.second.tag } }
+        ],
+        callback
+      );
+    }
+  ],
+  (err, results) => {
+
+    */
