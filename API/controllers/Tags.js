@@ -332,8 +332,12 @@ exports.compareLanguagesByTagsByYear = (req, res, next) => {
 
 			try {
 				const year = parseInt(2018 - parseInt(newComp.year));
+				console.log(year);
 				firstArray = first[0].year[year].tags.qIds;
 				secondArray = second[0].year[year].tags.qIds;
+				console.log(firstArray);
+				console.log(secondArray);
+
 				//intersection:_.intersection(firstArray,secondArray)
 
 				intersectionArray = [];
