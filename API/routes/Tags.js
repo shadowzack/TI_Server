@@ -25,7 +25,7 @@ router.post('/compare', tagsController.compareLanguagesByTags);
 // route   POST tags/compare
 // desc    compare two languages by tags
 // access  Public
-router.get('/compare/:source', tagsController.compareLanguages);
+router.get('/compare/:source/:year', tagsController.compareLanguages);
 
 ///////KEEP this for me
 // route   GET tags/
